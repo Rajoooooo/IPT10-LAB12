@@ -12,17 +12,26 @@ class User extends BaseModel
                 SET
                     complete_name=:complete_name,
                     email=:email,
-                    `password`=:password"; // Changed to match your column name
+                    `password`=:password_hash";        
         $statement = $this->db->prepare($sql);
         $password_hash = $this->hashPassword($data['password']);
         $statement->execute([
             'complete_name' => $data['complete_name'],
             'email' => $data['email'],
-            'password' => $password_hash // Changed to match your column name
+            'password_hash' => $password_hash
         ]);
     
         return $this->db->lastInsertId();
     }
+
+    public function getUserID($email) {
+        $sql = "SELECT id FROM users WHERE email = :email";
+        $statement = $this->db->prepare($sql);
+        $statement->execute(['email' => $email]);
+    
+        return $statement->fetchColumn();
+    }
+
 
     protected function hashPassword($password)
     {
@@ -31,22 +40,26 @@ class User extends BaseModel
 
     public function verifyAccess($email, $password)
     {
-        $sql = "SELECT password FROM users WHERE email = :email"; // Ensure this matches your table
+        $sql = "SELECT password FROM users WHERE email = :email";
         $statement = $this->db->prepare($sql);
-        $statement->execute(['email' => $email]);
+        $statement->execute([
+            'email' => $email
+        ]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
-        
         if (empty($result)) {
             return false;
         }
 
-        return password_verify($password, $result['password']); // Check against the 'password' column
+        return password_verify($password, $result['password']);
     }
 
-    public function getUserByEmail($email) {
-        $sql = "SELECT * FROM users WHERE email = :email"; // Fetch user details
+    public function getAllUsers()
+    {
+        $sql = "SELECT * FROM users";
         $statement = $this->db->prepare($sql);
-        $statement->execute(['email' => $email]);
-        return $statement->fetch(PDO::FETCH_ASSOC); // Return user data
+        $statement->execute();
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
+
 }
