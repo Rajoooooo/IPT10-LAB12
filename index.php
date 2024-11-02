@@ -23,6 +23,9 @@ try {
     $router->get('/login', '\App\Controllers\LoginController@loginForm');
     $router->post('/login', '\App\Controllers\LoginController@login');
 
+    $router->get('/examinees', '\App\Controllers\ExamineesController@index');
+    $router->get('/exam-attempts/{exam_attempt_id}', '\App\Controllers\ExamineesController@exportToPDF');
+
     // Run it!
     $router->run();
 
