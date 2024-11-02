@@ -3,38 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Form Form</title>
+    <title>Login</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
 
     <style>
-        body {padding-top: 50px;}
-        .main__container { width: 100dvw; padding: 0px 500px;}
-        h2 { text-align: center;}
-    </style>
+        body {
+            background-color: #ffffff; /* Light background for better contrast */
+            font-family: Arial, sans-serif;
+        }
 
+        .main__container {
+            width: 100vw;
+            max-width: 400px; /* Reduced width for a more compact design */
+            margin: auto;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            background-color: #fff; /* White background for the form */
+            border: 1px solid #ffffff; /* Subtle border */
+            margin-top: 100px; /* Space from the top */
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px; /* Space below the header */
+        }
+
+        .alert {
+            background-color: #ffe5e5;
+            border: 1px solid #ffcccc;
+            color: #d8000c;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="main__container">
-        <h2>Login Form</h2>
+        <h2>Login</h2>
 
-        <form action="/login" method="POST">
+        {{#errors}}
+        <div class="alert alert-danger" role="alert">
+            <ul>
+                {{#errors}}
+                    <li>{{.}}</li>
+                {{/errors}}
+            </ul>
+        </div>
+        {{/errors}}
+
+        {{#remaining_attempts}}
+        <p>Attempts remaining: {{remaining_attempts}}</p>
+        {{/remaining_attempts}}
+
+        <form action="/login" method="post">
+            <div>
+                <label for="email">Email (required):</label>
+                <input type="text" id="email" name="email" required {{#form_disabled}}disabled{{/form_disabled}}>
+            </div>
     
             <div>
-                <label for="email">Email Address <span style="color: red">*</span></label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div>
-                <label for="password">Password <span style="color: red">*</span></label>
-                <input type="password" id="password" name="password" required>
+                <label for="password">Password (required):</label>
+                <input type="password" id="password" name="password" required {{#form_disabled}}disabled{{/form_disabled}}>
             </div>
     
-            <div>
-                <button type="submit">Login</button>
+            <div class="button-container">
+                <button type="submit" {{#form_disabled}}style="display:none;"{{/form_disabled}}>Login</button>
             </div>
         </form>
-
     </div>
 </body>
 </html>
